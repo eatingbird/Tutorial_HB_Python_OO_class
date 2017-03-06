@@ -65,7 +65,7 @@ class Question(object):
     return user_answer == self.correct_answer
 
 
-class Exam(Question):
+class Exam(object):
   
   def __init__(self, test_name):
     self.test_name = test_name
@@ -74,45 +74,22 @@ class Exam(Question):
                      'questions': self.questions}
 
   def add_question(self, question, correct_answer):
-    super(Exam,self).__init__(question, correct_answer)
-    self.questions.append(self.q_a_pair)
+    question = Question(question, correct_answer).q_a_pair
+    self.questions.append(question)
 
   def administer(self):
-    score = 0.0
-    self.score = score
-    for q in self.questions:
-      self.question = q["question"]
-      self.correct_answer = q["correct_answer"]
-      if self.ask_and_evaluate():
-        self.score += 1
+    self.score = 0.0
+    if self.questions:
+      for q in self.questions:
+        test_question = Question(q["question"], q["correct_answer"])
+        if test_question.ask_and_evaluate():
+          self.score += 1
     return self.score/len(self.questions)
 
-  def take_test(self, first_name, last_name, address):
-    student_info = Student(first_name, last_name, address).info
-    print student_info
+  def take_test(self, Student):
     self.score = self.administer()
     print "The score is %s." %str(self.score)
 
-
-# class example(Student, Exam, Question):
-#   #     Creates an exam
-#   c = Exam("Mari")
-
-#   # Adds a few questions to the exam
-#   # These should be part of the function; no need to prompt the user for questions.
-#   c.add_question('What is the capital of Alberta?', 'Edmonton')
-#   c.add_question('What?', 'Y')
-#   print c
-
-#   # Creates a student
-#   a = Student("first", "last", "add")
-#   print a.info
-  
-#   # Administers the test for that student using the take test function you just wrote
-#   print c.administer()
-
-# # example1 = example
-# # example1
 
 class Quiz(Exam):
   def __init__(self, test_name):
@@ -121,17 +98,41 @@ class Quiz(Exam):
 
   def administer(self):
     cnt = 0
-    for q in self.questions:
-      self.question = q["question"]
-      self.correct_answer = q["correct_answer"]
-      if self.ask_and_evaluate():
-        cnt += 1
-      if cnt >= len(self.questions)/2:
+    self.score = "Test Not Passed"
+    if self.questions:
+      for q in self.questions:
+        test_question = Question(q["question"], q["correct_answer"])
+        if test_question.ask_and_evaluate():
+          cnt += 1
+    if cnt >= len(self.questions)/2:
         self.score = "Test Passed"
         return self.score
     return self.score
 
-a = Quiz("quiz1")
-a.add_question('What is the capital of Alberta?', 'Edmonton')
-a.add_question('What?', 'Y')
-print a.administer()
+def example():
+  #     Creates an exam
+  sample_exam = Exam("Mari")
+
+  # Adds a few questions to the exam
+  # These should be part of the function; no need to prompt the user for questions.
+  sample_exam.add_question('1+2', '3')
+  sample_exam.add_question('2+3', '5')
+
+  # Creates a student
+  stu1 = Student("Seo", "Lee", "234 Main st.")
+  
+  # # Administers the test for that student using the take test function you just wrote
+  print sample_exam.administer()
+
+  # Test "take_test" module in Exam
+  sample_exam.take_test(stu1)
+  print sample_exam.score
+
+  # Test "Quiz" module inheriting Exam
+  sample_quiz = Quiz("quiz1")
+  sample_quiz.add_question('2-1', '1')
+  sample_quiz.add_question('5-2', '3')
+  print sample_quiz.administer()
+
+example()
+
