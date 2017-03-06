@@ -43,6 +43,8 @@ Part 1: Discussion
 # Create your classes and class methods
 
 class Student(object):
+  """Generates student object"""
+
   def __init__(self, first_name, last_name, address):
     self.first_name = first_name
     self.last_name = last_name
@@ -53,6 +55,7 @@ class Student(object):
 
 
 class Question(object):
+  """Generates a question and if called evaluates answer"""
   
   def __init__(self, question, correct_answer):
     self.question = question
@@ -66,6 +69,7 @@ class Question(object):
 
 
 class Exam(object):
+  """Generates Exam template. take_test module go through questions"""
   
   def __init__(self, test_name):
     self.test_name = test_name
@@ -92,6 +96,8 @@ class Exam(object):
 
 
 class Quiz(Exam):
+  """Generate Quiz which is a child class of Exam. Administer func differs"""
+
   def __init__(self, test_name):
     super(Quiz,self).__init__(test_name)
     self.score = "Not Passed"
@@ -110,6 +116,8 @@ class Quiz(Exam):
     return self.score
 
 def example():
+  """an exmaple function that generates and tests the above classes"""
+
   #     Creates an exam
   sample_exam = Exam("Mari")
 
