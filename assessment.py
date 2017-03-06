@@ -42,32 +42,96 @@ Part 1: Discussion
 # Parts 2 through 5:
 # Create your classes and class methods
 
-# two classes and two methods added
-class AbstractHousehold(object): # Parent (super class)
-    """ An abstract parent class of all households """
+class Student(object):
+  def __init__(self, first_name, last_name, address):
+    self.first_name = first_name
+    self.last_name = last_name
+    self.address = address
+    self.info = {'first_name': first_name,
+                 'last_name': last_name,
+                 'address': address}
 
-    alive = True # parent class attribute
 
-    def __init__(self): # parnet class method that initializes child class attribute
-        self.added_to_household = True
-        print "Type print from parent init, att in child: %s" %self.type_of
+class Question(object):
+  
+  def __init__(self, question, correct_answer):
+    self.question = question
+    self.correct_answer = correct_answer
+    self.q_a_pair = {'question': question,
+                     'correct_answer': correct_answer}
 
-class Human(AbstractHousehold):
-    """A class that defines human household members"""
+  def ask_and_evaluate(self):
+    user_answer = raw_input("%s > " %self.question)
+    return user_answer == self.correct_answer
 
-    type_of = "human" # Child class attribute
 
-    def __init__(self, name):
-      self.name = name
-      print "Name from child init input: %s" %self.name
-      print "Status_alive from parent attribute:", self.alive
-      print self.num_legs(2)
-      return super(Human, self).__init__()
-      
-    def num_legs(self, number):
-      return "Num leg inside child module: %s" %number
+class Exam(Question):
+  
+  def __init__(self, test_name):
+    self.test_name = test_name
+    self.questions = []
+    self.exam_all = {'test_name': self.test_name,
+                     'questions': self.questions}
 
-print
-myself = Human("Morine") # when the initiation occurs, the type is set to human
-print "Parent init accessible from instance: %s" %myself.added_to_household # check if init super is in the instance
-print
+  def add_question(self, question, correct_answer):
+    super(Exam,self).__init__(question, correct_answer)
+    self.questions.append(self.q_a_pair)
+
+  def administer(self):
+    score = 0.0
+    self.score = score
+    for q in self.questions:
+      self.question = q["question"]
+      self.correct_answer = q["correct_answer"]
+      if self.ask_and_evaluate():
+        self.score += 1
+    return self.score/len(self.questions)
+
+  def take_test(self, first_name, last_name, address):
+    student_info = Student(first_name, last_name, address).info
+    print student_info
+    self.score = self.administer()
+    print "The score is %s." %str(self.score)
+
+
+# class example(Student, Exam, Question):
+#   #     Creates an exam
+#   c = Exam("Mari")
+
+#   # Adds a few questions to the exam
+#   # These should be part of the function; no need to prompt the user for questions.
+#   c.add_question('What is the capital of Alberta?', 'Edmonton')
+#   c.add_question('What?', 'Y')
+#   print c
+
+#   # Creates a student
+#   a = Student("first", "last", "add")
+#   print a.info
+  
+#   # Administers the test for that student using the take test function you just wrote
+#   print c.administer()
+
+# # example1 = example
+# # example1
+
+class Quiz(Exam):
+  def __init__(self, test_name):
+    super(Quiz,self).__init__(test_name)
+    self.score = "Not Passed"
+
+  def administer(self):
+    cnt = 0
+    for q in self.questions:
+      self.question = q["question"]
+      self.correct_answer = q["correct_answer"]
+      if self.ask_and_evaluate():
+        cnt += 1
+      if cnt >= len(self.questions)/2:
+        self.score = "Test Passed"
+        return self.score
+    return self.score
+
+a = Quiz("quiz1")
+a.add_question('What is the capital of Alberta?', 'Edmonton')
+a.add_question('What?', 'Y')
+print a.administer()
